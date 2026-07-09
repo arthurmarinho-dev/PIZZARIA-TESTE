@@ -5,10 +5,56 @@ import styles from './styles.module.scss'
 import { UploadCloud } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/app/dashboard/components/button"
+import { api } from "@/services/api"
+import { getCookieClient } from "@/lib/cookieClient"
 
-export function Form() {
+interface CategoryProps {
+    id: string;
+    name: string;
+}
+
+interface Props {
+    categories: CategoryProps[]
+}
+
+export function Form( {categories}: Props ) {
     const [image, setImage] = useState<File>()
     const [previewImage, setPreviewImage] = useState("")
+
+    async function handleRegisterProduct(formData: FormData) {
+
+        const categoryIndex = formData.get("category")
+        const name = formData.get("name")
+        const price = formData.get("price")
+        const description = formData.get("description")
+
+
+        if (!name || !categoryIndex || !price || !description || !image) {
+            return
+        }
+
+        const data = new FormData()
+
+        data.append("name", name)
+        data.append("price", price)
+        data.append("description", description)
+        data.append("category_id", categories[Number(categoryIndex)].id)
+        data.append("file", image)
+
+        const token = getCookieClient()
+
+        await api.post("/product", data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            return
+        })
+
+        console.log("CADASTRADO COM SUCESSO!")
+    }
 
     function handleFile(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files[0]) {
@@ -28,7 +74,7 @@ export function Form() {
         <main className={styles.container}>
             <h1>Novo produto</h1>
 
-                <form className={styles.form}>
+                <form className={styles.form} action={handleRegisterProduct}>
                     <label className={styles.labelImage}>
                         <span>
                             <UploadCloud size={30} color="#FFF" />
@@ -36,6 +82,7 @@ export function Form() {
 
                         <input
                             type="file"
+                            name="file"
                             accept="image/png, image/jpeg"
                             required
                             onChange={handleFile}
@@ -54,12 +101,11 @@ export function Form() {
                     </label>
 
                     <select name="category">
-                        <option key={1} value={1}>
-                            Pizzas
-                        </option>
-                        <option key={1} value={1}>
-                            Bebidas
-                        </option>
+                        {categories.map( (category, index) => (
+                            <option key={category.id} value={index}>
+                                {category.name}
+                            </option>
+                        ))}
                     </select>
 
                     <input
