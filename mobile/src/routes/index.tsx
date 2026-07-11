@@ -1,10 +1,14 @@
-import { View, ActivityIndicator, TurboModuleRegistry } from "react-native";
+import React, { useContext } from 'react'
+
+import { View, ActivityIndicator } from "react-native";
 
 import AppRoutes from "./app.routes";
 import AuthRoutes from "./auth.routes";
 
+import { AuthContext } from "../contexts/AuthContext";
+
 function Routes() {
-    const isAuthenticated = false
+    const { isAuthenticated } = useContext(AuthContext)
     const loading = false
 
     if (loading) {
