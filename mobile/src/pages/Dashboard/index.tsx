@@ -1,8 +1,25 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import { useNavigation } from '@react-navigation/native'
+
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { StackParamsList } from '../../routes/app.routes'
+
 export default function Dashboard() {
+    const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
+
+    const [number, setNumber] = useState('')
+
+    async function openOrder() {
+        if(number === '') {
+            return
+        }
+
+        // precisa fazer a requisição e abrir a mesa e navegar para proxima tela
+        navigation.navigate('Order', { number: number, order_id: '' })
+    }
 
     return(
         <SafeAreaView style={styles.container}>
@@ -13,9 +30,11 @@ export default function Dashboard() {
                 placeholderTextColor={'#f0f0f0'}
                 style={styles.input}
                 keyboardType='numeric'
+                value={number}
+                onChangeText={setNumber}
             />
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={openOrder}>
                 <Text style={styles.buttonText}>Abrir Mesa</Text>
             </TouchableOpacity>
         </SafeAreaView>
@@ -42,7 +61,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#101026',
         borderRadius: 4,
         paddingHorizontal: 8,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 22,
+        color: '#fff'
     },
     button: {
         width: '90%',
