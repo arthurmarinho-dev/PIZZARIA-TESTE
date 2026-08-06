@@ -1,0 +1,32 @@
+Instruções para configurar o projeto em outra máquina:
+
+1. Instalar dependências
+   - Vá para backend/ e execute: npm install
+   - Se for usar o frontend, vá para frontend/ e execute: npm install
+   - Se for usar o mobile, vá para mobile/ e execute: npm install
+
+2. Criar o arquivo .env no backend/
+   - Crie um arquivo backend/.env com pelo menos as variáveis abaixo:
+     DATABASE_URL="postgresql://usuario:senha@localhost:5432/pizzaria?schema=public"
+     JWT_SECRET=uma_chave_secreta
+     CLOUDINARY_NAME=seu_cloudinary_name
+     CLOUDINARY_KEY=seu_cloudinary_key
+     CLOUDINARY_SECRET=seu_cloudinary_secret
+
+3. Configurar o banco de dados PostgreSQL
+   - Instale ou tenha um servidor PostgreSQL rodando
+   - Crie o database usado em DATABASE_URL (por exemplo, pizzaria)
+   - Crie o usuário/senha correspondentes ou use os do connection string
+
+4. Inicializar o Prisma
+   - Execute no backend/: npx prisma generate
+   - Depois execute: npx prisma migrate dev
+   - Se preferir apenas aplicar o schema sem criar migration, use: npx prisma db push
+
+5. Rodar o backend
+   - Entre em backend/ e execute: npm run dev
+
+Observações importantes:
+- O arquivo .env não está versionado no repositório (está no .gitignore).
+- O banco na nova máquina começa vazio, a não ser que você importe dados de outro ambiente.
+- O backend depende de variáveis de ambiente para JWT e Cloudinary, então é preciso preencher todas elas.
